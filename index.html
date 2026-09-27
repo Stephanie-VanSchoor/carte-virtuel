@@ -685,7 +685,7 @@
             updatePreview(); sauvegarder();
         }
 
-        // ✅ PHOTO REDIMENSIONNÉE À 60px, QUALITÉ 50%
+        // ✅ PHOTO EN WEBP 150px — Qualité visuelle ET lien court
         function chargerPhoto(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -694,7 +694,7 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const maxSize = 60;
+                    const maxSize = 150;
                     let w = img.width, h = img.height;
                     if (w > h) { if (w > maxSize) { h = h * maxSize / w; w = maxSize; } }
                     else { if (h > maxSize) { w = w * maxSize / h; h = maxSize; } }
@@ -702,7 +702,15 @@
                     canvas.height = h;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, w, h);
-                    photoData = canvas.toDataURL('image/jpeg', 0.5);
+                    // Test WebP support
+                    let format = 'image/webp';
+                    let testData = canvas.toDataURL(format, 0.8);
+                    if (!testData.startsWith('data:image/webp')) {
+                        // Fallback JPEG si WebP non supporté
+                        format = 'image/jpeg';
+                        testData = canvas.toDataURL(format, 0.7);
+                    }
+                    photoData = testData;
                     document.getElementById('photoPreview').innerHTML = `<img src="${photoData}">`;
                     updatePreview();
                     sauvegarder();
