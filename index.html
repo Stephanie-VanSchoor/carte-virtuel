@@ -23,11 +23,8 @@
 
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: #0a0a0f;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background: #0a0a0f; color: #fff; min-height: 100vh;
+            display: flex; flex-direction: column;
             transition: background 0.3s, color 0.3s;
         }
 
@@ -39,9 +36,7 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         body.light .header .badge {
-            background: rgba(0,114,255,0.1);
-            border-color: rgba(0,114,255,0.3);
-            color: #0072ff;
+            background: rgba(0,114,255,0.1); border-color: rgba(0,114,255,0.3); color: #0072ff;
         }
         body.light .theme-toggle { background: #ffffff; border-color: #d0d8e0; color: #1a2a3a; }
         body.light .theme-toggle:hover { background: #e8eef4; }
@@ -55,8 +50,7 @@
             background: #ffffff; border-color: #7b2ff7;
         }
         body.light .option-btn:not([class*="tpl-"]) {
-            background: rgba(240,244,248,0.8);
-            border-color: #d0d8e0;
+            background: rgba(240,244,248,0.8); border-color: #d0d8e0;
         }
         body.light .option-btn .label { color: #1a2a3a; text-shadow: none; }
         body.light .preview-area {
@@ -70,20 +64,18 @@
         body.light .photo-upload label.upload-btn { background: #f0f4f8; color: #5a7a9a; border-color: #d0d8e0; }
         body.light .btn-secondary { background: #f0f4f8; color: #5a7a9a; border-color: #d0d8e0; }
         body.light .btn-secondary:hover { background: #e8eef4; }
+        body.light .card.shape-cut::after { background: #f0f4f8; }
 
         .header {
-            background: rgba(255,255,255,0.03);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            padding: 14px 28px;
-            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 14px 28px; display: flex; justify-content: space-between; align-items: center;
             flex-wrap: wrap; gap: 12px;
         }
         .header-left { display: flex; align-items: center; gap: 12px; }
         .header h1 {
             font-size: 1.15em;
             background: linear-gradient(90deg, #00d4ff, #7b2ff7);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            font-weight: 800;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;
         }
         .header .badge {
             background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3);
@@ -92,9 +84,8 @@
         }
         .theme-toggle {
             background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);
-            color: #fff; padding: 8px 16px; border-radius: 20px;
-            cursor: pointer; font-size: 0.85em; font-weight: 600;
-            transition: all 0.2s; font-family: inherit;
+            color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer;
+            font-size: 0.85em; font-weight: 600; transition: all 0.2s; font-family: inherit;
         }
         .theme-toggle:hover { background: rgba(255,255,255,0.1); }
 
@@ -118,14 +109,12 @@
         }
         input, textarea, select {
             width: 100%; padding: 9px 12px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px; color: #fff;
-            font-size: 0.85em; font-family: inherit; transition: all 0.2s;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; color: #fff; font-size: 0.85em;
+            font-family: inherit; transition: all 0.2s;
         }
         input:focus, textarea:focus, select:focus {
-            outline: none; border-color: #7b2ff7;
-            background: rgba(255,255,255,0.08);
+            outline: none; border-color: #7b2ff7; background: rgba(255,255,255,0.08);
         }
         textarea { resize: vertical; min-height: 45px; }
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
@@ -133,9 +122,8 @@
 
         .option-btn {
             aspect-ratio: 1; border-radius: 8px;
-            border: 2px solid rgba(255,255,255,0.1);
-            cursor: pointer; transition: all 0.2s;
-            position: relative; overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.1); cursor: pointer;
+            transition: all 0.2s; position: relative; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
             font-size: 1em; background: rgba(255,255,255,0.05);
         }
@@ -185,21 +173,15 @@
         .card.shape-cut { border-radius: 16px; }
         .card.shape-cut::after {
             content: ''; position: absolute; top: 0; right: 0;
-            width: 60px; height: 60px;
-            background: #0a0a0f;
-            clip-path: polygon(100% 0, 0 0, 100% 100%);
-            z-index: 3;
+            width: 60px; height: 60px; background: #0a0a0f;
+            clip-path: polygon(100% 0, 0 0, 100% 100%); z-index: 3;
         }
-        body.light .card.shape-cut::after { background: #f0f4f8; }
         .card.shape-badge { border-radius: 24px; }
         .card.shape-badge::after {
             content: ''; position: absolute; bottom: -1px; left: 50%;
-            transform: translateX(-50%);
-            width: 0; height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-top: 20px solid rgba(0,0,0,0.3);
-            z-index: 3;
+            transform: translateX(-50%); width: 0; height: 0;
+            border-left: 20px solid transparent; border-right: 20px solid transparent;
+            border-top: 20px solid rgba(0,0,0,0.3); z-index: 3;
         }
 
         /* Cartes */
@@ -371,11 +353,9 @@
 
         .share-section { margin-top: 18px; width: 100%; max-width: 380px; }
         .share-box {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px; padding: 12px;
-            font-size: 0.72em; color: #888;
-            word-break: break-all; margin-bottom: 8px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; padding: 12px; font-size: 0.72em;
+            color: #888; word-break: break-all; margin-bottom: 8px;
             max-height: 80px; overflow-y: auto;
         }
         .share-box strong { color: #00d4ff; display: block; margin-bottom: 5px; }
@@ -403,8 +383,7 @@
 
         .preview-area {
             padding: 30px 20px; display: flex; flex-direction: column;
-            align-items: center; justify-content: flex-start;
-            min-height: 400px;
+            align-items: center; justify-content: flex-start; min-height: 400px;
             background: radial-gradient(circle at 50% 50%, rgba(123,47,247,0.1), transparent 70%);
             overflow-y: auto;
         }
@@ -422,9 +401,8 @@
             flex: 1; text-align: center; padding: 8px;
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px; cursor: pointer;
-            font-size: 0.75em; color: #ccc;
-            text-transform: none; letter-spacing: 0; font-weight: 600;
+            border-radius: 8px; cursor: pointer; font-size: 0.75em;
+            color: #ccc; text-transform: none; letter-spacing: 0; font-weight: 600;
         }
         .photo-upload input[type="file"] { display: none; }
 
@@ -435,20 +413,18 @@
         }
         .footer-licence .footer-copy { color: #88CCFF; font-weight: 700; }
 
-        /* Carte (aperçu) */
+        /* Carte */
         .card {
             width: 100%; max-width: 380px;
             padding: 28px 24px; text-align: center;
             position: relative; overflow: hidden;
             transition: all 0.4s;
-            box-shadow: 0 25px 70px rgba(0,0,0,0.5);
-            color: #fff;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.5); color: #fff;
         }
         .card .avatar {
             width: 80px; height: 80px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 2em; font-weight: 800;
-            margin: 0 auto 14px;
+            font-size: 2em; font-weight: 800; margin: 0 auto 14px;
             border: 3px solid rgba(255,255,255,0.2);
             overflow: hidden; position: relative; z-index: 2;
             background: rgba(0,0,0,0.2);
@@ -459,9 +435,8 @@
         .card .bio { font-size: 0.82em; line-height: 1.5; margin-bottom: 16px; opacity: 0.9; position: relative; z-index: 2; }
         .card .links { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; position: relative; z-index: 2; }
         .card .links a {
-            text-decoration: none; font-size: 0.78em;
-            padding: 7px 14px; border-radius: 20px;
-            transition: all 0.2s; font-weight: 600;
+            text-decoration: none; font-size: 0.78em; padding: 7px 14px;
+            border-radius: 20px; transition: all 0.2s; font-weight: 600;
             display: inline-block; color: inherit;
             background: rgba(255,255,255,0.15);
             border: 1px solid rgba(255,255,255,0.2);
@@ -477,13 +452,10 @@
             display: flex; flex-direction: column; align-items: center; gap: 5px;
             position: relative; z-index: 2;
         }
-        .card .qr-inline .qr-box {
-            background: #fff; padding: 5px; border-radius: 6px;
-        }
+        .card .qr-inline .qr-box { background: #fff; padding: 5px; border-radius: 6px; }
         .card .qr-inline .qr-box img, .card .qr-inline .qr-box canvas { display: block; }
         .card .qr-inline .qr-label {
-            font-size: 0.6em; opacity: 0.6;
-            letter-spacing: 1px; text-transform: uppercase;
+            font-size: 0.6em; opacity: 0.6; letter-spacing: 1px; text-transform: uppercase;
         }
     </style>
 </head>
@@ -713,7 +685,7 @@
             updatePreview(); sauvegarder();
         }
 
-        // ✅ CORRECTION 1 : Redimensionner la photo
+        // ✅ PHOTO REDIMENSIONNÉE À 60px, QUALITÉ 50%
         function chargerPhoto(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -722,7 +694,7 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const maxSize = 150;
+                    const maxSize = 60;
                     let w = img.width, h = img.height;
                     if (w > h) { if (w > maxSize) { h = h * maxSize / w; w = maxSize; } }
                     else { if (h > maxSize) { w = w * maxSize / h; h = maxSize; } }
@@ -730,7 +702,7 @@
                     canvas.height = h;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, w, h);
-                    photoData = canvas.toDataURL('image/jpeg', 0.6);
+                    photoData = canvas.toDataURL('image/jpeg', 0.5);
                     document.getElementById('photoPreview').innerHTML = `<img src="${photoData}">`;
                     updatePreview();
                     sauvegarder();
@@ -840,7 +812,6 @@
             document.getElementById('shareSection').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // ✅ CORRECTION 2 : Copier avec fallback
         function copierLien() {
             const span = document.getElementById('shareBox').querySelector('span');
             if (!span) { alert('Génère d\'abord le lien'); return; }
@@ -869,15 +840,11 @@
             }
         }
 
-        // ✅ CORRECTION 3 : Ouvrir avec ancre
         function ouvrirCarte() {
             const span = document.getElementById('shareBox').querySelector('span');
             if (!span) { alert('Génère d\'abord le lien'); return; }
             const url = span.textContent.trim();
-            if (!url || url.length > 8000) {
-                alert('Le lien est trop long (photo trop lourde). Essaie sans photo.');
-                return;
-            }
+            if (!url) { alert('Lien vide'); return; }
             const a = document.createElement('a');
             a.href = url;
             a.target = '_blank';
