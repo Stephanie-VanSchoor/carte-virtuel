@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ============================================================
+    © 2026 VANSCHOOR S. – TOUS DROITS RÉSERVÉS
+    Licence propriétaire. Toute reproduction, distribution,
+    modification ou utilisation sans autorisation écrite
+    préalable de l'auteur est strictement interdite.
+    Auteur : Vanschoor S.
+    Contact : leurquinstephanie@gmail.com
+    ============================================================ -->
+
+    <meta name="author" content="Vanschoor S.">
+    <meta name="copyright" content="© 2026 Vanschoor S. – Tous droits réservés">
+    <title>Créateur de Cartes de Visite — Pro</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* ============================================
+        THEME SOMBRE (par défaut)
+        ============================================ */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0a0a0f;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* ============================================
+        THEME CLAIR
+        ============================================ */
+        body.light {
+            background: #f0f4f8;
+            color: #1a2a3a;
+        }
+        body.light .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e0e6ed;
+        }
+        body.light .header h1 {
+            background: linear-gradient(90deg, #0072ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.light .header .badge {
+            background: rgba(0,114,255,0.1);
+            border-color: rgba(0,114,255,0.3);
+            color: #0072ff;
+        }
+        body.light .theme-toggle {
+            background: #ffffff;
+            border-color: #d0d8e0;
+            color: #1a2a3a;
+        }
+        body.light .theme-toggle:hover { background: #e8eef4; }
+        body.light .sidebar {
+            background: #ffffff;
+            border-right: 1px solid #e0e6ed;
+        }
+        body.light .sidebar h3 { color: #5a7a9a; }
+        body.light label { color: #5a7a9a; }
+        body.light input,
+        body.light textarea,
+        body.light select {
+            background: #f0f4f8;
+            border-color: #d0d8e0;
+            color: #1a2a3a;
+        }
+        body.light input:focus,
+        body.light textarea:focus,
+        body.light select:focus {
+            background: #ffffff;
+            border-color: #7b2ff7;
+        }
+        body.light .option-btn:not([class*="tpl-"]) {
+             background: rgba(240,244,248,0.8);
+             border-color: #d0d8e0;
+}
+        }
+        body.light .option-btn .label {
+            color: #1a2a3a;
+            text-shadow: none;
+        }
+        body.light .preview-area {
+            background: radial-gradient(circle at 50% 50%, rgba(123,47,247,0.08), transparent 70%);
+        }
+        body.light .share-box {
+            background: #f0f4f8;
+            border-color: #d0d8e0;
+            color: #5a7a9a;
+        }
+        body.light .share-box span { color: #1a2a3a; }
+        body.light .footer-licence {
+            color: #5a7a9a;
+            border-top-color: #e0e6ed;
+        }
+        body.light .footer-licence .footer-copy { color: #0072ff; }
+        body.light .card.shape-cut::after { background: #f0f4f8; }
+        body.light .photo-preview {
+            background: #f0f4f8;
+            border-color: #d0d8e0;
+        }
+        body.light .photo-upload label.upload-btn {
+            background: #f0f4f8;
+            color: #5a7a9a;
+            border-color: #d0d8e0;
+        }
+        body.light .btn-secondary {
+            background: #f0f4f8;
+            color: #5a7a9a;
+            border-color: #d0d8e0;
+        }
+        body.light .btn-secondary:hover { background: #e8eef4; }
+
+        .header {
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header h1 {
+            font-size: 1.15em;
+            background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        .header .badge {
+            background: rgba(0,212,255,0.1);
+            border: 1px solid rgba(0,212,255,0.3);
+            color: #00d4ff;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.7em;
+            font-weight: 700;
+        }
+        .theme-toggle {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .theme-toggle:hover { background: rgba(255,255,255,0.1); }
+
+        .main {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            flex: 1;
+            min-height: 0;
+        }
+        @media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+
+        .sidebar {
+            background: #0d0d14;
+            border-right: 1px solid rgba(255,255,255,0.08);
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 60px);
+            transition: background 0.3s;
+        }
+        .sidebar h3 {
+            font-size: 0.7em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #666;
+            margin-bottom: 10px;
+            margin-top: 16px;
+        }
+        .sidebar h3:first-child { margin-top: 0; }
+        .form-group { margin-bottom: 12px; }
+        label {
+            display: block;
+            font-size: 0.7em;
+            color: #888;
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 9px 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.85em;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #7b2ff7;
+            background: rgba(255,255,255,0.08);
+        }
+        textarea { resize: vertical; min-height: 45px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+
+        .option-btn {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 2px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+            background: rgba(255,255,255,0.05);
+        }
+        .option-btn:hover { transform: scale(1.05); }
+        .option-btn.active { border-color: #00d4ff; box-shadow: 0 0 12px rgba(0,212,255,0.4); }
+        .option-btn .label {
+            position: absolute;
+            bottom: 1px;
+            left: 0; right: 0;
+            text-align: center;
+            font-size: 0.45em;
+            color: #fff;
+            text-shadow: 0 1px 2px #000;
+            font-weight: 700;
+        }
+
+        /* ============================================
+        PASTILLES DE COULEUR (sidebar - toujours visibles)
+        ============================================ */
+        .option-btn.tpl-neon { background: linear-gradient(135deg, #00d4ff, #7b2ff7); }
+        .option-btn.tpl-dark { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+        .option-btn.tpl-gold { background: linear-gradient(135deg, #f7971e, #ffd200); }
+        .option-btn.tpl-mint { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .option-btn.tpl-rose { background: linear-gradient(135deg, #ee0979, #ff6a00); }
+        .option-btn.tpl-ocean { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
+        .option-btn.tpl-violet { background: linear-gradient(135deg, #8e2de2, #4a00e0); }
+        .option-btn.tpl-sunset { background: linear-gradient(135deg, #f83600, #f9d423); }
+        .option-btn.tpl-emerald { background: linear-gradient(135deg, #0f9b0f, #000000); }
+        .option-btn.tpl-crimson { background: linear-gradient(135deg, #870000, #190a05); }
+        .option-btn.tpl-sky { background: linear-gradient(135deg, #00c6ff, #0072ff); }
+        .option-btn.tpl-peach { background: linear-gradient(135deg, #ff9966, #ff5e62); }
+        .option-btn.tpl-lavender { background: linear-gradient(135deg, #b993d6, #8ca6db); }
+        .option-btn.tpl-midnight { background: linear-gradient(135deg, #232526, #414345); }
+        .option-btn.tpl-coral { background: linear-gradient(135deg, #ff512f, #dd2476); }
+        .option-btn.tpl-forest { background: linear-gradient(135deg, #134e5e, #71b280); }
+        .option-btn.tpl-candy { background: linear-gradient(135deg, #ff6fd8, #3813c2); }
+        .option-btn.tpl-ice { background: linear-gradient(135deg, #83a4d4, #b6fbff); }
+        .option-btn.tpl-fire { background: linear-gradient(135deg, #ff0000, #fdcf58); }
+        .option-btn.tpl-luxury { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
+        .option-btn.tpl-white { background: #ffffff; border: 2px solid #d0d8e0; }
+        .option-btn.tpl-cream { background: linear-gradient(135deg, #fef9e7, #fdebd0); }
+        .option-btn.tpl-pastel-pink { background: linear-gradient(135deg, #ffdde1, #ee9ca7); }
+        .option-btn.tpl-pastel-blue { background: linear-gradient(135deg, #d4e4f7, #a8c8e8); }
+        .option-btn.tpl-pastel-green { background: linear-gradient(135deg, #d4f5d4, #a8e6a8); }
+        .option-btn.tpl-pastel-yellow { background: linear-gradient(135deg, #fff9c4, #ffe082); }
+        .option-btn.tpl-pastel-purple { background: linear-gradient(135deg, #e8d5f7, #c8a8e8); }
+        .option-btn.tpl-beige { background: linear-gradient(135deg, #f5f0e8, #e8dfc8); }
+
+        /* Formes */
+        .card.shape-square { border-radius: 16px; }
+        .card.shape-round { border-radius: 50%; padding: 60px 40px; }
+        .card.shape-rect { border-radius: 12px; max-width: 500px; }
+        .card.shape-oval { border-radius: 50% / 30%; padding: 50px 40px; }
+        .card.shape-cut { border-radius: 16px; }
+        .card.shape-cut::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 60px; height: 60px;
+            background: #0a0a0f;
+            clip-path: polygon(100% 0, 0 0, 100% 100%);
+            z-index: 3;
+        }
+        .card.shape-badge { border-radius: 24px; }
+        .card.shape-badge::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 50%;
+            transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 20px solid rgba(0,0,0,0.3);
+            z-index: 3;
+        }
+
+        /* Cartes - Templates couleurs */
+        .card.neon { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); color: #fff; }
+        .card.neon .avatar { background: linear-gradient(135deg, #00d4ff, #7b2ff7); }
+        .card.neon .links a { background: rgba(0,212,255,0.15); color: #00d4ff; border: 1px solid rgba(0,212,255,0.3); }
+
+        .card.dark { background: #0d0d14; color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+        .card.dark .avatar { background: #1a1a2e; color: #7b2ff7; }
+        .card.dark .links a { background: rgba(123,47,247,0.15); color: #7b2ff7; border: 1px solid rgba(123,47,247,0.3); }
+
+        .card.gold { background: linear-gradient(135deg, #1a1200, #2a1f00); color: #ffd200; }
+        .card.gold .avatar { background: linear-gradient(135deg, #f7971e, #ffd200); color: #1a1200; }
+        .card.gold .role, .card.gold .bio { color: #ffe066; }
+        .card.gold .links a { background: rgba(255,210,0,0.1); color: #ffd200; border: 1px solid rgba(255,210,0,0.3); }
+
+        .card.mint { background: linear-gradient(135deg, #0a1a17, #0f2a24); color: #fff; }
+        .card.mint .avatar { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .card.mint .links a { background: rgba(56,239,125,0.15); color: #38ef7d; border: 1px solid rgba(56,239,125,0.3); }
+
+        .card.rose { background: linear-gradient(135deg, #2a0a1a, #3a0f1f); color: #fff; }
+        .card.rose .avatar { background: linear-gradient(135deg, #ee0979, #ff6a00); }
+        .card.rose .links a { background: rgba(238,9,121,0.15); color: #ff6a00; border: 1px solid rgba(255,106,0,0.3); }
+
+        .card.ocean { background: linear-gradient(135deg, #0a1a2a, #102a3a); color: #fff; }
+        .card.ocean .avatar { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
+        .card.ocean .links a { background: rgba(109,213,237,0.15); color: #6dd5ed; border: 1px solid rgba(109,213,237,0.3); }
+
+        .card.violet { background: linear-gradient(135deg, #1a0a2a, #2a0a4a); color: #fff; }
+        .card.violet .avatar { background: linear-gradient(135deg, #8e2de2, #4a00e0); }
+        .card.violet .links a { background: rgba(142,45,226,0.15); color: #b06cff; border: 1px solid rgba(142,45,226,0.3); }
+
+        .card.sunset { background: linear-gradient(135deg, #2a0a0a, #3a1500); color: #fff; }
+        .card.sunset .avatar { background: linear-gradient(135deg, #f83600, #f9d423); }
+        .card.sunset .links a { background: rgba(248,54,0,0.15); color: #ff8866; border: 1px solid rgba(248,54,0,0.3); }
+
+        .card.emerald { background: linear-gradient(135deg, #001a00, #002a0a); color: #fff; }
+        .card.emerald .avatar { background: linear-gradient(135deg, #0f9b0f, #000000); }
+        .card.emerald .links a { background: rgba(15,155,15,0.15); color: #38ef7d; border: 1px solid rgba(15,155,15,0.3); }
+
+        .card.crimson { background: linear-gradient(135deg, #1a0000, #2a0a0a); color: #fff; }
+        .card.crimson .avatar { background: linear-gradient(135deg, #870000, #190a05); }
+        .card.crimson .links a { background: rgba(135,0,0,0.2); color: #ff6666; border: 1px solid rgba(135,0,0,0.4); }
+
+        .card.sky { background: linear-gradient(135deg, #001a2a, #003a5a); color: #fff; }
+        .card.sky .avatar { background: linear-gradient(135deg, #00c6ff, #0072ff); }
+        .card.sky .links a { background: rgba(0,198,255,0.15); color: #00c6ff; border: 1px solid rgba(0,198,255,0.3); }
+
+        .card.peach { background: linear-gradient(135deg, #2a0a0a, #3a1a0a); color: #fff; }
+        .card.peach .avatar { background: linear-gradient(135deg, #ff9966, #ff5e62); }
+        .card.peach .links a { background: rgba(255,153,102,0.15); color: #ff9966; border: 1px solid rgba(255,153,102,0.3); }
+
+        .card.lavender { background: linear-gradient(135deg, #1a1a2a, #2a1a3a); color: #fff; }
+        .card.lavender .avatar { background: linear-gradient(135deg, #b993d6, #8ca6db); }
+        .card.lavender .links a { background: rgba(185,147,214,0.15); color: #b993d6; border: 1px solid rgba(185,147,214,0.3); }
+
+        .card.midnight { background: linear-gradient(135deg, #0a0a0a, #1a1a1a); color: #fff; }
+        .card.midnight .avatar { background: linear-gradient(135deg, #232526, #414345); }
+        .card.midnight .links a { background: rgba(255,255,255,0.1); color: #ccc; border: 1px solid rgba(255,255,255,0.2); }
+
+        .card.coral { background: linear-gradient(135deg, #2a0a1a, #3a0520); color: #fff; }
+        .card.coral .avatar { background: linear-gradient(135deg, #ff512f, #dd2476); }
+        .card.coral .links a { background: rgba(255,81,47,0.15); color: #ff8866; border: 1px solid rgba(255,81,47,0.3); }
+
+        .card.forest { background: linear-gradient(135deg, #0a1a15, #1a2a20); color: #fff; }
+        .card.forest .avatar { background: linear-gradient(135deg, #134e5e, #71b280); }
+        .card.forest .links a { background: rgba(113,178,128,0.15); color: #71b280; border: 1px solid rgba(113,178,128,0.3); }
+
+        .card.candy { background: linear-gradient(135deg, #1a0a2a, #2a0a3a); color: #fff; }
+        .card.candy .avatar { background: linear-gradient(135deg, #ff6fd8, #3813c2); }
+        .card.candy .links a { background: rgba(255,111,216,0.15); color: #ff6fd8; border: 1px solid rgba(255,111,216,0.3); }
+
+        .card.ice { background: linear-gradient(135deg, #0a1a2a, #1a2a3a); color: #fff; }
+        .card.ice .avatar { background: linear-gradient(135deg, #83a4d4, #b6fbff); }
+        .card.ice .links a { background: rgba(131,164,212,0.15); color: #83a4d4; border: 1px solid rgba(131,164,212,0.3); }
+
+        .card.fire { background: linear-gradient(135deg, #1a0000, #2a0a00); color: #fff; }
+        .card.fire .avatar { background: linear-gradient(135deg, #ff0000, #fdcf58); }
+        .card.fire .links a { background: rgba(255,0,0,0.15); color: #fdcf58; border: 1px solid rgba(255,0,0,0.3); }
+
+        .card.luxury { background: linear-gradient(135deg, #0a0a1a, #1a1a2a); color: #fff; }
+        .card.luxury .avatar { background: linear-gradient(135deg, #0f0c29, #302b63); }
+        .card.luxury .links a { background: rgba(255,215,0,0.1); color: #ffd700; border: 1px solid rgba(255,215,0,0.3); }
+
+        /* Cartes - Couleurs claires */
+        .card.white { background: #ffffff; color: #1a1a2e; }
+        .card.white .avatar { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
+        .card.white .links a { background: rgba(102,126,234,0.1); color: #667eea; border: 1px solid rgba(102,126,234,0.3); }
+        .card.white .watermark { color: #999; }
+
+        .card.cream { background: linear-gradient(135deg, #fef9e7, #fdebd0); color: #5a4a2a; }
+        .card.cream .avatar { background: linear-gradient(135deg, #d4a574, #b8845a); color: #fff; }
+        .card.cream .links a { background: rgba(184,132,90,0.15); color: #8a5a2a; border: 1px solid rgba(184,132,90,0.3); }
+
+        .card.pastel-pink { background: linear-gradient(135deg, #ffdde1, #ee9ca7); color: #5a2a3a; }
+        .card.pastel-pink .avatar { background: linear-gradient(135deg, #ee9ca7, #d67a8a); color: #fff; }
+        .card.pastel-pink .links a { background: rgba(238,156,167,0.2); color: #8a3a4a; border: 1px solid rgba(238,156,167,0.4); }
+
+        .card.pastel-blue { background: linear-gradient(135deg, #d4e4f7, #a8c8e8); color: #1a3a5a; }
+        .card.pastel-blue .avatar { background: linear-gradient(135deg, #6a9fd8, #4a7fb8); color: #fff; }
+        .card.pastel-blue .links a { background: rgba(106,159,216,0.2); color: #2a4a6a; border: 1px solid rgba(106,159,216,0.4); }
+
+        .card.pastel-green { background: linear-gradient(135deg, #d4f5d4, #a8e6a8); color: #1a4a1a; }
+        .card.pastel-green .avatar { background: linear-gradient(135deg, #6ac86a, #4aa84a); color: #fff; }
+        .card.pastel-green .links a { background: rgba(106,200,106,0.2); color: #2a5a2a; border: 1px solid rgba(106,200,106,0.4); }
+
+        .card.pastel-yellow { background: linear-gradient(135deg, #fff9c4, #ffe082); color: #5a4a00; }
+        .card.pastel-yellow .avatar { background: linear-gradient(135deg, #f0c040, #d0a020); color: #fff; }
+        .card.pastel-yellow .links a { background: rgba(240,192,64,0.2); color: #6a5a10; border: 1px solid rgba(240,192,64,0.4); }
+
+        .card.pastel-purple { background: linear-gradient(135deg, #e8d5f7, #c8a8e8); color: #3a1a5a; }
+        .card.pastel-purple .avatar { background: linear-gradient(135deg, #a878d8, #8858b8); color: #fff; }
+        .card.pastel-purple .links a { background: rgba(168,120,216,0.2); color: #4a2a6a; border: 1px solid rgba(168,120,216,0.4); }
+
+        .card.beige { background: linear-gradient(135deg, #f5f0e8, #e8dfc8); color: #4a3a2a; }
+        .card.beige .avatar { background: linear-gradient(135deg, #b8a888, #988868); color: #fff; }
+        .card.beige .links a { background: rgba(184,168,136,0.2); color: #5a4a3a; border: 1px solid rgba(184,168,136,0.4); }
+
+        /* Décorations */
+        .card.deco-dots::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .card.deco-border {
+            border: 2px solid rgba(255,215,0,0.5);
+            box-shadow: 0 0 30px rgba(255,215,0,0.2), 0 25px 70px rgba(0,0,0,0.5);
+        }
+        .card.deco-wave::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 60px;
+            background: radial-gradient(ellipse at 50% 100%, rgba(255,255,255,0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .card.deco-stars::before {
+            content: '✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦';
+            position: absolute;
+            top: 15px; left: 0; right: 0;
+            text-align: center;
+            font-size: 0.6em;
+            letter-spacing: 8px;
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .card.deco-stripes::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .card.deco-glow::before {
+            content: '';
+            position: absolute;
+            top: -50px; left: 50%;
+            transform: translateX(-50%);
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .card.deco-corners::before,
+        .card.deco-corners::after {
+            content: '';
+            position: absolute;
+            width: 40px; height: 40px;
+            border: 2px solid rgba(255,255,255,0.3);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .card.deco-corners::before { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+        .card.deco-corners::after { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+        .card.deco-shine::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            transform: skewX(-20deg);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Polices */
+        .card.font-inter { font-family: 'Inter', system-ui, sans-serif; }
+        .card.font-serif { font-family: Georgia, 'Times New Roman', serif; }
+        .card.font-mono { font-family: 'Courier New', monospace; }
+        .card.font-rounded { font-family: 'Segoe UI', system-ui, sans-serif; }
+        .card.font-elegant { font-family: 'Georgia', serif; letter-spacing: 0.5px; }
+
+        .share-section { margin-top: 18px; width: 100%; max-width: 380px; }
+        .share-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.72em;
+            color: #888;
+            word-break: break-all;
+            margin-bottom: 8px;
+            max-height: 80px;
+            overflow-y: auto;
+        }
+        .share-box strong { color: #00d4ff; display: block; margin-bottom: 5px; }
+        .share-box span { color: #fff; font-size: 0.9em; }
+        .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .qr-section { margin-top: 12px; text-align: center; }
+        .qr-section #qrcode {
+            display: inline-block;
+            padding: 10px;
+            background: #fff;
+            border-radius: 10px;
+            margin-top: 6px;
+        }
+        .qr-section #qrcode img,
+        .qr-section #qrcode canvas { display: block; }
+        .qr-label { font-size: 0.7em; color: #888; margin-top: 6px; }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            margin-bottom: 6px;
+        }
+        .btn-primary { background: linear-gradient(90deg, #00d4ff, #7b2ff7); color: #fff; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(123,47,247,0.4); }
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            color: #ccc;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .preview-area {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 400px;
+            background: radial-gradient(circle at 50% 50%, rgba(123,47,247,0.1), transparent 70%);
+            overflow-y: auto;
+        }
+
+        .photo-upload { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .photo-preview {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 2px dashed rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-upload label.upload-btn {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75em;
+            color: #ccc;
+            text-transform: none;
+            letter-spacing: 0;
+            font-weight: 600;
+        }
+        .photo-upload input[type="file"] { display: none; }
+
+        .footer-licence {
+            text-align: center;
+            padding: 16px 15px;
+            color: #4a6a8a;
+            font-size: 0.7em;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .footer-licence .footer-copy { color: #88CCFF; font-weight: 700; }
+
+        /* Cartes (aperçu) */
+        .card {
+            width: 100%;
+            max-width: 380px;
+            padding: 28px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.5);
+            color: #fff;
+        }
+        .card .avatar {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: 800;
+            margin: 0 auto 14px;
+            border: 3px solid rgba(255,255,255,0.2);
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+            background: rgba(0,0,0,0.2);
+        }
+        .card .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .card h2 { font-size: 1.35em; margin-bottom: 3px; font-weight: 800; position: relative; z-index: 2; }
+        .card .role { font-size: 0.9em; margin-bottom: 10px; opacity: 0.85; position: relative; z-index: 2; }
+        .card .bio { font-size: 0.82em; line-height: 1.5; margin-bottom: 16px; opacity: 0.9; position: relative; z-index: 2; }
+        .card .links { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; position: relative; z-index: 2; }
+        .card .links a {
+            text-decoration: none;
+            font-size: 0.78em;
+            padding: 7px 14px;
+            border-radius: 20px;
+            transition: all 0.2s;
+            font-weight: 600;
+            display: inline-block;
+            color: inherit;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .card .links a:hover { transform: translateY(-2px); }
+        .card .watermark {
+            position: absolute;
+            bottom: 8px; right: 12px;
+            font-size: 0.55em;
+            opacity: 0.4;
+            letter-spacing: 1px;
+            z-index: 2;
+        }
+        .card .qr-inline {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            position: relative;
+            z-index: 2;
+        }
+        .card .qr-inline .qr-box {
+            background: #fff;
+            padding: 5px;
+            border-radius: 6px;
+        }
+        .card .qr-inline .qr-box img,
+        .card .qr-inline .qr-box canvas { display: block; }
+        .card .qr-inline .qr-label {
+            font-size: 0.6em;
+            opacity: 0.6;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-left">
+            <h1>✨ Créateur de Cartes</h1>
+            <span class="badge">PRO</span>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀️ Mode clair</button>
+    </header>
+
+    <div class="main">
+        <aside class="sidebar">
+            <h3>📐 Forme</h3>
+            <div class="grid-3">
+                <div class="option-btn shape-square active" data-shape="square" onclick="selectShape(this)" title="Carrée">⬛<span class="label">Carré</span></div>
+                <div class="option-btn shape-round" data-shape="round" onclick="selectShape(this)" title="Ronde">⭕<span class="label">Rond</span></div>
+                <div class="option-btn shape-rect" data-shape="rect" onclick="selectShape(this)" title="Rectangle">▬<span class="label">Rect</span></div>
+                <div class="option-btn shape-oval" data-shape="oval" onclick="selectShape(this)" title="Ovale">⬭<span class="label">Ovale</span></div>
+                <div class="option-btn shape-cut" data-shape="cut" onclick="selectShape(this)" title="Coin coupé">◤<span class="label">Coupé</span></div>
+                <div class="option-btn shape-badge" data-shape="badge" onclick="selectShape(this)" title="Badge">🏷️<span class="label">Badge</span></div>
+            </div>
+
+            <h3>🎨 Couleur (foncée)</h3>
+            <div class="grid-4">
+                <div class="option-btn tpl-neon active" data-tpl="neon" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-dark" data-tpl="dark" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-gold" data-tpl="gold" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-mint" data-tpl="mint" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-rose" data-tpl="rose" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-ocean" data-tpl="ocean" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-violet" data-tpl="violet" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-sunset" data-tpl="sunset" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-emerald" data-tpl="emerald" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-crimson" data-tpl="crimson" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-sky" data-tpl="sky" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-peach" data-tpl="peach" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-lavender" data-tpl="lavender" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-midnight" data-tpl="midnight" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-coral" data-tpl="coral" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-forest" data-tpl="forest" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-candy" data-tpl="candy" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-ice" data-tpl="ice" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-fire" data-tpl="fire" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-luxury" data-tpl="luxury" onclick="selectTemplate(this)"></div>
+            </div>
+
+            <h3>☀️ Couleur (claire)</h3>
+            <div class="grid-4">
+                <div class="option-btn tpl-white" data-tpl="white" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-cream" data-tpl="cream" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-pastel-pink" data-tpl="pastel-pink" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-pastel-blue" data-tpl="pastel-blue" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-pastel-green" data-tpl="pastel-green" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-pastel-yellow" data-tpl="pastel-yellow" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-pastel-purple" data-tpl="pastel-purple" onclick="selectTemplate(this)"></div>
+                <div class="option-btn tpl-beige" data-tpl="beige" onclick="selectTemplate(this)"></div>
+            </div>
+
+            <h3>✨ Décoration</h3>
+            <div class="grid-4">
+                <div class="option-btn active" data-deco="" onclick="selectDeco(this)">—<span class="label">Aucune</span></div>
+                <div class="option-btn" data-deco="deco-dots" onclick="selectDeco(this)">⋯<span class="label">Points</span></div>
+                <div class="option-btn" data-deco="deco-border" onclick="selectDeco(this)">▢<span class="label">Bordure</span></div>
+                <div class="option-btn" data-deco="deco-wave" onclick="selectDeco(this)">〜<span class="label">Vague</span></div>
+                <div class="option-btn" data-deco="deco-stars" onclick="selectDeco(this)">✦<span class="label">Étoiles</span></div>
+                <div class="option-btn" data-deco="deco-stripes" onclick="selectDeco(this)">≡<span class="label">Rayures</span></div>
+                <div class="option-btn" data-deco="deco-glow" onclick="selectDeco(this)">☀<span class="label">Halo</span></div>
+                <div class="option-btn" data-deco="deco-corners" onclick="selectDeco(this)">⌐<span class="label">Coins</span></div>
+                <div class="option-btn" data-deco="deco-shine" onclick="selectDeco(this)">✧<span class="label">Brillance</span></div>
+            </div>
+
+            <h3>🔤 Police</h3>
+            <div class="form-group">
+                <select id="fontSelect" onchange="updatePreview()">
+                    <option value="font-inter">Inter (moderne)</option>
+                    <option value="font-serif">Serif (classique)</option>
+                    <option value="font-mono">Mono (tech)</option>
+                    <option value="font-rounded">Rounded (doux)</option>
+                    <option value="font-elegant">Elegant (luxe)</option>
+                </select>
+            </div>
+
+            <h3>📸 Photo de profil</h3>
+            <div class="photo-upload">
+                <div class="photo-preview" id="photoPreview">👤</div>
+                <label class="upload-btn" for="photoInput">Choisir</label>
+                <input type="file" id="photoInput" accept="image/*" onchange="chargerPhoto(event)">
+            </div>
+            <button class="btn btn-secondary" onclick="supprimerPhoto()" style="font-size:0.7em;padding:6px;">🗑️ Supprimer</button>
+
+            <h3>👤 Informations</h3>
+            <div class="form-group">
+                <label>Nom complet</label>
+                <input type="text" id="nom" placeholder="Jean Dupont" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+                <label>Profession</label>
+                <input type="text" id="role" placeholder="Développeur Web" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+                <label>Bio courte</label>
+                <textarea id="bio" placeholder="Passionné de code et de design..." oninput="updatePreview()"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="jean@exemple.com" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+                <label>Téléphone</label>
+                <input type="tel" id="tel" placeholder="+32 495 93 27 09" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+                <label>Site web / Portfolio</label>
+                <input type="url" id="site" placeholder="https://monsite.com" oninput="updatePreview()">
+            </div>
+
+            <h3>⚙️ Options</h3>
+            <div class="form-group">
+                <label>Forme de l'avatar</label>
+                <select id="avatarShape" onchange="updatePreview()">
+                    <option value="circle">Cercle</option>
+                    <option value="rounded">Arrondi</option>
+                    <option value="square">Carré</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>QR code sur la carte</label>
+                <select id="qrOnCard" onchange="updatePreview()">
+                    <option value="yes">Oui</option>
+                    <option value="no">Non</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary" onclick="genererLien()" style="margin-top:14px;">🔗 Générer le lien</button>
+            <button class="btn btn-secondary" onclick="exporterPNG()">🖼️ Télécharger en PNG</button>
+        </aside>
+
+        <section class="preview-area">
+            <div class="card neon shape-square font-inter" id="card">
+                <div class="avatar" id="avatar">?</div>
+                <h2 id="previewNom">Votre nom</h2>
+                <p class="role" id="previewRole">Votre profession</p>
+                <p class="bio" id="previewBio">Votre bio apparaîtra ici...</p>
+                <div class="links" id="previewLinks">
+                    <a href="#" id="linkEmail" style="display:none;">✉️ Email</a>
+                    <a href="#" id="linkTel" style="display:none;">📞 Téléphone</a>
+                    <a href="#" id="linkSite" style="display:none;" target="_blank">🌐 Site</a>
+                </div>
+                <div class="qr-inline" id="qrInline" style="display:none;">
+                    <div class="qr-box" id="qrOnCardBox"></div>
+                    <div class="qr-label">Scannez pour me contacter</div>
+                </div>
+                <div class="watermark">CARTE VIRTUELLE</div>
+            </div>
+
+            <div class="share-section" id="shareSection" style="display:none;">
+                <div class="share-box" id="shareBox"></div>
+                <div class="action-btns">
+                    <button class="btn btn-primary" onclick="copierLien()">📋 Copier</button>
+                    <button class="btn btn-secondary" onclick="ouvrirCarte()">👁️ Ouvrir</button>
+                </div>
+                <div class="qr-section">
+                    <div class="qr-label">📱 Scannez pour ouvrir</div>
+                    <div id="qrcode"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer-licence">
+        <div>© 2026 <strong class="footer-copy">VANSCHOOR S.</strong> – Tous droits réservés.</div>
+        <div style="margin-top:4px;font-size:0.9em;opacity:0.7;">
+            Licence propriétaire. Reproduction interdite sans autorisation.
+        </div>
+    </footer>
+
+    <script>
+        let currentTemplate = 'neon';
+        let currentShape = 'square';
+        let currentDeco = '';
+        let photoData = null;
+        let isLight = false;
+
+        function toggleTheme() {
+            isLight = !isLight;
+            document.body.classList.toggle('light', isLight);
+            document.getElementById('themeBtn').textContent = isLight ? '🌙 Mode sombre' : '☀️ Mode clair';
+            localStorage.setItem('carteTheme', isLight ? 'light' : 'dark');
+        }
+
+        const savedTheme = localStorage.getItem('carteTheme');
+        if (savedTheme === 'light') {
+            isLight = true;
+            document.body.classList.add('light');
+            document.getElementById('themeBtn').textContent = '🌙 Mode sombre';
+        }
+
+        function compress(str) {
+            return btoa(unescape(encodeURIComponent(str)))
+                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+        function decompress(str) {
+            str = str.replace(/-/g, '+').replace(/_/g, '/');
+            while (str.length % 4) str += '=';
+            return decodeURIComponent(escape(atob(str)));
+        }
+
+        function selectTemplate(el) {
+            document.querySelectorAll('[data-tpl]').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            currentTemplate = el.dataset.tpl;
+            updatePreview(); sauvegarder();
+        }
+        function selectShape(el) {
+            document.querySelectorAll('[data-shape]').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            currentShape = el.dataset.shape;
+            updatePreview(); sauvegarder();
+        }
+        function selectDeco(el) {
+            document.querySelectorAll('[data-deco]').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            currentDeco = el.dataset.deco;
+            updatePreview(); sauvegarder();
+        }
+
+        function chargerPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                photoData = e.target.result;
+                document.getElementById('photoPreview').innerHTML = `<img src="${photoData}">`;
+                updatePreview(); sauvegarder();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function supprimerPhoto() {
+            photoData = null;
+            document.getElementById('photoPreview').innerHTML = '👤';
+            document.getElementById('photoInput').value = '';
+            updatePreview(); sauvegarder();
+        }
+
+        function updatePreview() {
+            const nom = document.getElementById('nom').value.trim() || 'Votre nom';
+            const role = document.getElementById('role').value.trim() || 'Votre profession';
+            const bio = document.getElementById('bio').value.trim() || 'Votre bio apparaîtra ici...';
+            const email = document.getElementById('email').value.trim();
+            const tel = document.getElementById('tel').value.trim();
+            const site = document.getElementById('site').value.trim();
+            const avatarShape = document.getElementById('avatarShape').value;
+            const qrOnCard = document.getElementById('qrOnCard').value;
+            const font = document.getElementById('fontSelect').value;
+
+            const initiales = nom.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?';
+            const avatar = document.getElementById('avatar');
+
+            if (photoData) {
+                avatar.innerHTML = `<img src="${photoData}" style="width:100%;height:100%;object-fit:cover;">`;
+            } else {
+                avatar.textContent = initiales;
+            }
+
+            if (avatarShape === 'circle') avatar.style.borderRadius = '50%';
+            else if (avatarShape === 'rounded') avatar.style.borderRadius = '20px';
+            else avatar.style.borderRadius = '8px';
+
+            document.getElementById('previewNom').textContent = nom;
+            document.getElementById('previewRole').textContent = role;
+            document.getElementById('previewBio').textContent = bio;
+
+            const linkEmail = document.getElementById('linkEmail');
+            const linkTel = document.getElementById('linkTel');
+            const linkSite = document.getElementById('linkSite');
+
+            if (email) { linkEmail.href = 'mailto:' + email; linkEmail.style.display = 'inline-block'; }
+            else linkEmail.style.display = 'none';
+            if (tel) { linkTel.href = 'tel:' + tel.replace(/\s/g, ''); linkTel.style.display = 'inline-block'; }
+            else linkTel.style.display = 'none';
+            if (site) { linkSite.href = site; linkSite.style.display = 'inline-block'; }
+            else linkSite.style.display = 'none';
+
+            const card = document.getElementById('card');
+            let classes = 'card ' + currentTemplate + ' shape-' + currentShape + ' ' + font;
+            if (currentDeco) classes += ' ' + currentDeco;
+            card.className = classes;
+
+            const qrInline = document.getElementById('qrInline');
+            if (qrOnCard === 'yes' && (email || tel || site)) {
+                qrInline.style.display = 'flex';
+                const qrBox = document.getElementById('qrOnCardBox');
+                qrBox.innerHTML = '';
+                const contactText = `Nom: ${nom}\nProfession: ${role}\nEmail: ${email}\nTel: ${tel}\nSite: ${site}`;
+                new QRCode(qrBox, {
+                    text: contactText, width: 70, height: 70,
+                    colorDark: '#000000', colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.L
+                });
+            } else {
+                qrInline.style.display = 'none';
+            }
+        }
+
+        function genererLien() {
+            const nom = document.getElementById('nom').value.trim();
+            const role = document.getElementById('role').value.trim();
+            const bio = document.getElementById('bio').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const tel = document.getElementById('tel').value.trim();
+            const site = document.getElementById('site').value.trim();
+            const avatarShape = document.getElementById('avatarShape').value;
+            const font = document.getElementById('fontSelect').value;
+
+            if (!nom) { alert('Veuillez entrer au moins votre nom.'); return; }
+
+            const data = { n: nom, r: role, b: bio, e: email, t: tel, s: site, tpl: currentTemplate, sh: avatarShape, f: font, sp: currentShape, d: currentDeco };
+            if (photoData) data.p = photoData;
+
+            const encoded = compress(JSON.stringify(data));
+            const baseURL = window.location.origin + window.location.pathname;
+            const shareURL = baseURL + '?c=' + encoded;
+
+            document.getElementById('shareBox').innerHTML =
+                `<strong>🔗 Lien de partage :</strong><span>${shareURL}</span>`;
+            document.getElementById('shareSection').style.display = 'block';
+
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            new QRCode(qrContainer, {
+                text: shareURL, width: 140, height: 140,
+                colorDark: '#000000', colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.L
+            });
+            document.getElementById('shareSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copierLien() {
+            const url = document.getElementById('shareBox').querySelector('span').textContent;
+            navigator.clipboard.writeText(url).then(() => alert('✅ Lien copié !'))
+                .catch(() => alert('❌ Copie impossible.'));
+        }
+        function ouvrirCarte() {
+            const url = document.getElementById('shareBox').querySelector('span').textContent;
+            window.open(url, '_blank');
+        }
+
+        function exporterPNG() {
+            const card = document.getElementById('card');
+            html2canvas(card, {
+                backgroundColor: null, scale: 2,
+                useCORS: true, allowTaint: true
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'carte-visite.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                alert('❌ Erreur lors de l\'export.');
+                console.error(err);
+            });
+        }
+
+        function chargerDepuisURL() {
+            const params = new URLSearchParams(window.location.search);
+            const c = params.get('c');
+            if (c) {
+                try {
+                    const data = JSON.parse(decompress(c));
+                    document.getElementById('nom').value = data.n || '';
+                    document.getElementById('role').value = data.r || '';
+                    document.getElementById('bio').value = data.b || '';
+                    document.getElementById('email').value = data.e || '';
+                    document.getElementById('tel').value = data.t || '';
+                    document.getElementById('site').value = data.s || '';
+                    if (data.p) { photoData = data.p; document.getElementById('photoPreview').innerHTML = `<img src="${photoData}">`; }
+                    if (data.tpl) { currentTemplate = data.tpl;
+                        document.querySelectorAll('[data-tpl]').forEach(b => b.classList.toggle('active', b.dataset.tpl === data.tpl)); }
+                    if (data.sh) document.getElementById('avatarShape').value = data.sh;
+                    if (data.f) document.getElementById('fontSelect').value = data.f;
+                    if (data.sp) { currentShape = data.sp;
+                        document.querySelectorAll('[data-shape]').forEach(b => b.classList.toggle('active', b.dataset.shape === data.sp)); }
+                    if (data.d) { currentDeco = data.d;
+                        document.querySelectorAll('[data-deco]').forEach(b => b.classList.toggle('active', b.dataset.deco === data.d)); }
+                } catch (e) { console.error(e); }
+            }
+        }
+
+        function chargerDepuisLocal() {
+            const saved = localStorage.getItem('carteVisitePro');
+            if (saved && !window.location.search) {
+                try {
+                    const data = JSON.parse(saved);
+                    if (data.n) document.getElementById('nom').value = data.n;
+                    if (data.r) document.getElementById('role').value = data.r;
+                    if (data.b) document.getElementById('bio').value = data.b;
+                    if (data.e) document.getElementById('email').value = data.e;
+                    if (data.t) document.getElementById('tel').value = data.t;
+                    if (data.s) document.getElementById('site').value = data.s;
+                    if (data.p) { photoData = data.p; document.getElementById('photoPreview').innerHTML = `<img src="${photoData}">`; }
+                    if (data.tpl) { currentTemplate = data.tpl;
+                        document.querySelectorAll('[data-tpl]').forEach(b => b.classList.toggle('active', b.dataset.tpl === data.tpl)); }
+                    if (data.sh) document.getElementById('avatarShape').value = data.sh;
+                    if (data.f) document.getElementById('fontSelect').value = data.f;
+                    if (data.sp) { currentShape = data.sp;
+                        document.querySelectorAll('[data-shape]').forEach(b => b.classList.toggle('active', b.dataset.shape === data.sp)); }
+                    if (data.d) { currentDeco = data.d;
+                        document.querySelectorAll('[data-deco]').forEach(b => b.classList.toggle('active', b.dataset.deco === data.d)); }
+                } catch (e) {}
+            }
+        }
+
+        function sauvegarder() {
+            const data = {
+                n: document.getElementById('nom').value,
+                r: document.getElementById('role').value,
+                b: document.getElementById('bio').value,
+                e: document.getElementById('email').value,
+                t: document.getElementById('tel').value,
+                s: document.getElementById('site').value,
+                tpl: currentTemplate,
+                sh: document.getElementById('avatarShape').value,
+                f: document.getElementById('fontSelect').value,
+                sp: currentShape,
+                d: currentDeco
+            };
+            if (photoData) data.p = photoData;
+            localStorage.setItem('carteVisitePro', JSON.stringify(data));
+        }
+        document.querySelectorAll('input, textarea, select').forEach(el => {
+            el.addEventListener('input', sauvegarder);
+            el.addEventListener('change', sauvegarder);
+        });
+
+        chargerDepuisLocal();
+        chargerDepuisURL();
+        updatePreview();
+    </script>
+</body>
+</html>
